@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Accueil Patient{% endblock %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Bienvenue {{ session.user.username }}</h2>
+
+<p>Uploader votre vidéo pour analyse :</p>
+
+<form method="POST" enctype="multipart/form-data" class="bg-white p-4 shadow rounded space-y-4 mt-2">
+  <label>Vidéo :</label>
+  <input type="file" name="video" required class="border p-2 rounded w-full">
+  <label>Âge :</label>
+  <input type="number" name="age" value="60" class="border p-2 rounded w-full">
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Analyser</button>
+</form>
+{% endblock %}
