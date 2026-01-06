@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">Uploader une vidéo</h2>
+
+<form method="POST" enctype="multipart/form-data" class="bg-white p-4 shadow rounded space-y-4">
+  <label class="block">
+    Sélectionner le patient :
+    <select name="patient_id" class="border p-2 rounded w-full">
+      {% for patient in patients %}
+        <option value="{{ patient._id }}">{{ patient.nom }}</option>
+      {% endfor %}
+    </select>
+  </label>
+
+  <label class="block">
+    Âge du patient :
+    <input type="number" name="age" value="60" class="border p-2 rounded w-full">
+  </label>
+
+  <label class="block">
+    Vidéo du patient :
+    <input type="file" name="video" required class="border p-2 rounded w-full">
+  </label>
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+    Analyser
+  </button>
+
+  <div id="progress-container" class="w-full bg-gray-200 h-4 rounded mt-2 hidden">
+    <div id="progress-bar" class="h-4 bg-green-500 rounded w-0"></div>
+  </div>
+</form>
+
+<script>
+const form = document.querySelector("form");
+const progressBar = document.getElementById("progress-bar");
+const container = document.getElementById("progress-container");
+
+form.addEventListener("submit", (e) => {
+    container.style.display = "block";
+    progressBar.style.width = "0%";
+
+    let width = 0;
+    const interval = setInterval(() => {
+        if(width >= 100) clearInterval(interval);
+        width += 5;
+        progressBar.style.width = width + "%";
+    }, 100);
+});
+</script>
+{% endblock %}
