@@ -6,58 +6,58 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt
 from scipy.fft import fft
+from datetime import datetime
+import pickle
+
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-from datetime import datetime
-import pickle
-# Charger le modèle ML pour classification
-MODEL_PATH = "models/tremblement_model.pkl"
+
+from analysis.features import extract_features
+ 
+
+# ======================
+# CHARGER LE MODÈLE ML
+# ======================
+MODEL_PATH = "models/motor_disorder_model.pkl"
 ml_model = pickle.load(open(MODEL_PATH, "rb"))
 
-# ----- FILTRE BANDE PASSANTE -----
-def bandpass_filter(signal, fs, low=4, high=6, order=4):
-    nyq = 0.5 * fs
-    b, a = butter(order, [low/nyq, high/nyq], btype='band')
-    return filtfilt(b, a, signal)
-def classify_tremor(signal_features):
-    """Retourne type de tremblement et score"""
-    pred = ml_model.predict([signal_features])[0]
-    score = np.std(signal_features) * np.max(np.abs(signal_features))
-    if score < 0.002:
-        severity = "Faible"
-    elif score < 0.005:
-        severity = "Moyen"
-    else:
-        severity = "Élevé"
-    return pred, severity
 
-# ----- ANALYSE VIDEO -----
+# ======================
+# FILTRE BANDE PASSANTE
+# ======================
+def bandpass_filter(signal, fs, low=3, high=8, order=4):
+    nyq = 0.5 * fs
+    b, a = butter(order, [low/nyq, high/nyq], btype="band")
+    return filtfilt(b, a, signal)
+
+
+# ======================
+# ANALYSE VIDEO
+# ======================
 def analyze_video(video_path, patient_age=60, result_dir="static/results"):
+
     if not os.path.exists(video_path):
-        raise FileNotFoundError(f"Vidéo introuvable : {video_path}")
+        raise FileNotFoundError("Vidéo introuvable")
 
     os.makedirs(result_dir, exist_ok=True)
-    # Adapter la bande passante selon l'âge
-    if patient_age < 40:
-        low, high = 4.5, 6.5
-    elif patient_age > 70:
-        low, high = 3.5, 5.5
-    else:
-        low, high = 4, 6
-    # Charger le modèle Mediapipe
-    base_options = python.BaseOptions(model_asset_path="models/hand_landmarker.task")
+
+    # Mediapipe Hand
+    base_options = python.BaseOptions(
+        model_asset_path="models/hand_landmarker.task"
+    )
     options = vision.HandLandmarkerOptions(
         base_options=base_options,
-        num_hands=2,
+        num_hands=1,
         running_mode=vision.RunningMode.VIDEO
     )
     detector = vision.HandLandmarker.create_from_options(options)
 
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    timestamp_ms = 0
+
     y_positions = []
+    timestamp_ms = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -66,8 +66,10 @@ def analyze_video(video_path, patient_age=60, result_dir="static/results"):
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(
-        image_format=mp.ImageFormat.SRGB,
-        data=rgb)
+            image_format=mp.ImageFormat.SRGB,
+            data=rgb
+        )
+
         result = detector.detect_for_video(mp_image, int(timestamp_ms))
 
         if result.hand_landmarks:
@@ -78,56 +80,73 @@ def analyze_video(video_path, patient_age=60, result_dir="static/results"):
 
     cap.release()
 
-    # Vérification sécurité
-    if len(y_positions) < 10:
+    # Sécurité
+    if len(y_positions) < 30:
         return {
             "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
             "file": os.path.basename(video_path),
-            "amplitude": "Non détectée",
-            "frequency": "Non détectée",
-            "graph": None,
+            "disorder": "Non détectable",
             "interpretation": "Main non détectée",
-            "alert": None
+            "graph": None
         }
 
-    # Traitement du signal
+    # ======================
+    # SIGNAL
+    # ======================
     signal = bandpass_filter(np.array(y_positions), fps)
-    amplitude = float(np.std(signal))
+
+    # ======================
+    # FEATURES
+    # ======================
+    features = extract_features(signal, fps)
+    tremor_type = ml_model.predict([features])[0]
+
+    severity_score = features[0] * features[4]  # amplitude × fréquence
+
+    if severity_score < 0.002:
+      severity = "Faible"
+    elif severity_score < 0.005:
+        severity = "Moyenne"
+    else:
+        severity = "Élevée"
     fft_vals = np.abs(fft(signal))
     freqs = np.fft.fftfreq(len(fft_vals), 1 / fps)
     dominant_freq = abs(freqs[np.argmax(fft_vals)])
+    amplitude = np.std(signal)
 
-    # Graphique
+    # ======================
+    # GRAPH
+    # ======================
     plt.figure()
     plt.plot(signal)
     plt.title("Mouvement vertical du poignet")
     plt.xlabel("Frame")
     plt.ylabel("Position normalisée")
-    graph_path = os.path.join(result_dir, f"signal_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+
+    graph_path = os.path.join(
+        result_dir,
+        f"signal_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    )
     plt.savefig(graph_path)
     plt.close()
-    # ML Classification
-    features = signal[-100:]  # exemple simple, dernière partie du signal
-    tremor_type, severity = classify_tremor(features)
-    
-    # Interprétation
-    interpretation = "Mouvement normal"
-    alert = None
-    if 4 <= dominant_freq <= 6:
-        interpretation = "Oscillation 4–6 Hz : tremblement pathologique possible."
-        alert = "Tremblement suspect détecté"
-    elif dominant_freq >= 8:
-        interpretation = "Tremblement physiologique possible (stress, fatigue, froid)."
 
-    if amplitude > 0.002:
-        interpretation += " Amplitude élevée observée."
+    # ======================
+    # INTERPRÉTATION
+    # ======================
+    interpretation = {
+        "Normal": "Mouvement physiologique normal.",
+        "Hyperkinetique": "Mouvement excessif – tremblement pathologique possible.",
+        "Hypokinetique": "Mouvement lent et de faible amplitude.",
+        "Ataxique": "Mouvement désorganisé et non coordonné."
+    }.get(tremor_type, "Indéterminé")
 
     return {
         "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "file": os.path.basename(video_path),
         "amplitude": round(amplitude, 4),
         "frequency": round(dominant_freq, 2),
-        "graph": "/" + graph_path.replace("\\", "/"),
+        "tremor_type": tremor_type,
+        "severity": severity,
         "interpretation": interpretation,
-        "alert": alert
+        "graph": "/" + graph_path.replace("\\", "/")
     }
