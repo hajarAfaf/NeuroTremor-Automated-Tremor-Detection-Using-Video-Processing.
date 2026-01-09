@@ -7,8 +7,8 @@
 <div class="bg-white p-4 shadow rounded space-y-4">
   <p><strong>Amplitude :</strong> {{ results.amplitude }}</p>
   <p><strong>Fréquence dominante :</strong> {{ results.frequency }} Hz</p>
-  <p><strong>Type de tremblement :</strong> {{ results.type_tremblement }}</p>
-  <p><strong>Score de sévérité :</strong> {{ results.score_severite }}</p>
+  <p><strong>Type de tremblement :</strong> {{ results.tremor_type }}</p>
+  <p><strong>Score de sévérité :</strong> {{ results.severity }}</p>
 
   {% if results.alert %}
   <div class="text-red-600 font-bold">
