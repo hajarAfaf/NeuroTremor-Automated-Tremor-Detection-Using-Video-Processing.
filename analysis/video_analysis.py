@@ -19,7 +19,7 @@ from analysis.features import extract_features
 # ======================
 # CHARGER LE MODÈLE ML
 # ======================
-MODEL_PATH = "models/motor_disorder_model.pkl"
+MODEL_PATH = "models/tremblement_model_improved.pkl"
 ml_model = pickle.load(open(MODEL_PATH, "rb"))
 
 
