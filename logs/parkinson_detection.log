@@ -1,0 +1,92 @@
+2026-01-10 18:57:58,991 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:65]
+2026-01-10 18:59:19,398 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:65]
+2026-01-10 19:06:04,333 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:06:39,487 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:06:54,172 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:07:03,942 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:07:29,574 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:08:17,799 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:10:56,157 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:11:09,021 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:11:25,871 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:11:41,609 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:13:09,201 ERROR: Error 404: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. [in C:\parkinson-detection-main\app.py:97]
+Traceback (most recent call last):
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1458, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1440, in raise_routing_exception
+    raise request.routing_exception  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\ctx.py", line 353, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-01-10 19:14:28,118 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:14:33,837 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:14:41,534 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:38:20,628 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:38:28,009 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:38:53,302 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:39:23,614 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:39:30,138 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:39:39,808 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:40:12,974 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:50:58,299 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:51:07,704 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:51:16,279 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:51:49,755 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:51:57,220 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 19:52:10,640 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 20:41:45,631 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 20:41:47,415 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 20:44:35,680 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 20:56:18,634 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:02:36,910 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:02:39,216 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:03:23,874 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:04:31,899 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:04:34,200 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:05:45,789 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:09:14,509 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:09:16,752 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:13:48,208 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:13:50,430 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:14:56,812 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:14:59,041 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:15:09,166 ERROR: Error 404: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. [in C:\parkinson-detection-main\app.py:97]
+Traceback (most recent call last):
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1458, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\app.py", line 1440, in raise_routing_exception
+    raise request.routing_exception  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\flask\ctx.py", line 353, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\asus tuf\miniconda3\Lib\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-01-10 21:17:53,223 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:18:29,339 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:18:44,468 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:18:55,964 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:19:12,180 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:19:22,758 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:66]
+2026-01-10 21:20:10,333 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:15,335 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:23,364 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:30,432 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:35,441 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:41,487 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:20:52,674 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:21:02,113 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:21:07,786 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:62]
+2026-01-10 21:37:35,613 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:63]
+2026-01-10 21:38:59,888 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:63]
+2026-01-10 21:39:02,137 INFO: Parkinson Detection startup [in C:\parkinson-detection-main\app.py:63]

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}Historique de {{ patient_name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-10 text-center leading-tight">Historique des Analyses pour : <strong class="text-blue-700">{{ patient_name }}</strong></h2>
+
+  <div class="bg-white p-10 rounded-xl shadow-xl border border-gray-100 mb-10">
+    <h3 class="text-3xl font-bold text-gray-800 mb-6">Détails des Analyses</h3>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Date</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Amplitude</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Fréquence</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Type Tremblement</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Sévérité</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Alerte</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Détails</th>
+          </tr>
+        </thead>
+        <tbody id="analyses-table-body" class="bg-white divide-y divide-gray-200">
+          <tr><td colspan="7" class="px-6 py-4 text-center text-base text-gray-600">Chargement des analyses...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="analyses-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl shadow-md mt-6" role="alert">
+      <p class="text-lg">Erreur lors du chargement de l'historique des analyses.</p>
+    </div>
+    <div id="no-analyses-found" class="hidden bg-blue-100 border border-blue-400 text-blue-700 px-6 py-4 rounded-xl shadow-md mt-6" role="alert">
+      <p class="text-lg">Aucune analyse trouvée pour ce patient.</p>
+    </div>
+  </div>
+
+  <div class="bg-white p-10 rounded-xl shadow-xl border border-gray-100">
+    <h3 class="text-3xl font-bold text-gray-800 mb-6">Visualisation des Données</h3>
+    <div id="analysis-chart" class="w-full h-96"></div>
+    <div id="chart-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-xl shadow-md mt-6" role="alert">
+      <p class="text-lg">Erreur lors du chargement du graphique.</p>
+    </div>
+    <div id="no-chart-data" class="hidden bg-blue-100 border border-blue-400 text-blue-700 px-6 py-4 rounded-xl shadow-md mt-6" role="alert">
+      <p class="text-lg">Pas assez de données pour générer un graphique.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const patientId = "{{ patient_id }}"; // Passed from Flask route
+    const tableBody = document.getElementById('analyses-table-body');
+    const analysesErrorDiv = document.getElementById('analyses-error');
+    const noAnalysesFoundDiv = document.getElementById('no-analyses-found');
+    const analysisChartDiv = document.getElementById('analysis-chart');
+    const chartErrorDiv = document.getElementById('chart-error');
+    const noChartDataDiv = document.getElementById('no-chart-data');
+
+    fetch(`/api/patient/${patientId}/analyses`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(analyses => {
+            tableBody.innerHTML = ''; // Clear loading message
+
+            if (analyses.length === 0) {
+                noAnalysesFoundDiv.classList.remove('hidden');
+                tableBody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-base text-gray-600">Aucune analyse trouvée pour ce patient.</td></tr>';
+                return;
+            }
+
+            const dates = [];
+            const amplitudes = [];
+            const frequencies = [];
+            const severities = []; // Changed from scores to severities
+
+            analyses.forEach(analysis => {
+                const row = tableBody.insertRow();
+                row.className = 'hover:bg-gray-50'; // Tailwind hover effect
+                
+                const dateCell = row.insertCell();
+                dateCell.className = 'px-6 py-4 whitespace-nowrap text-base text-gray-800';
+                dateCell.textContent = analysis.timestamp.strftime('%Y-%m-%d %H:%M'); // Use timestamp
+
+                const amplitudeCell = row.insertCell();
+                amplitudeCell.className = 'px-6 py-4 whitespace-nowrap text-base text-gray-800';
+                amplitudeCell.textContent = analysis.result.amplitude.toFixed(2);
+
+                const frequencyCell = row.insertCell();
+                frequencyCell.className = 'px-6 py-4 whitespace-nowrap text-base text-gray-800';
+                frequencyCell.textContent = analysis.result.frequency.toFixed(2);
+
+                const tremorTypeCell = row.insertCell();
+                tremorTypeCell.className = 'px-6 py-4 whitespace-nowrap text-base text-gray-800';
+                tremorTypeCell.textContent = analysis.result.tremor_type;
+
+                const severityCell = row.insertCell();
+                severityCell.className = 'px-6 py-4 whitespace-nowrap text-base text-gray-800';
+                const severityBadge = document.createElement('span');
+                severityBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    analysis.result.severity === 'Sévère' ? 'bg-red-100 text-red-800' :
+                    analysis.result.severity === 'Modéré' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-green-100 text-green-800'
+                }`;
+                severityBadge.textContent = analysis.result.severity;
+                severityCell.appendChild(severityBadge);
+
+                const alertCell = row.insertCell();
+                alertCell.className = 'px-6 py-4 whitespace-nowrap text-base';
+                const alertSpan = document.createElement('span');
+                alertSpan.className = analysis.result.alert ? 'text-red-700 font-bold' : 'text-gray-600';
+                alertSpan.textContent = analysis.result.alert ? "Oui" : "Non";
+                alertCell.appendChild(alertSpan);
+
+                const detailsCell = row.insertCell();
+                detailsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-base font-medium';
+                const detailsLink = document.createElement('a');
+                detailsLink.href = `{{ url_for('main.result', analysis_id='_analysis_id_') }}`.replace('_analysis_id_', analysis._id);
+                detailsLink.className = 'text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out';
+                detailsLink.textContent = 'Voir le rapport';
+                detailsCell.appendChild(detailsLink);
+
+                dates.push(analysis.result.date);
+                amplitudes.push(analysis.result.amplitude);
+                frequencies.push(analysis.result.frequency);
+                severities.push(analysis.result.severity); // Use severity for charting
+            });
+
+            // Charting
+            if (dates.length > 0) {
+                const traceAmplitude = {
+                    x: dates,
+                    y: amplitudes,
+                    mode: 'lines+markers',
+                    name: 'Amplitude',
+                    line: {color: '#3B82F6'} // blue-500
+                };
+                const traceFrequency = {
+                    x: dates,
+                    y: frequencies,
+                    mode: 'lines+markers',
+                    name: 'Fréquence',
+                    line: {color: '#10B981'} // green-500
+                };
+                
+                // Map severity to a numerical value for charting
+                const severityMap = {'Normal': 0, 'Léger': 1, 'Modéré': 2, 'Sévère': 3};
+                const numericalSeverities = severities.map(s => severityMap[s] !== undefined ? severityMap[s] : -1);
+
+                const layout = {
+                    title: 'Évolution des Paramètres d\'Analyse',
+                    xaxis: {
+                        title: 'Date d\'Analyse',
+                        type: 'category'
+                    },
+                    yaxis: {
+                        title: 'Valeur',
+                        tickvals: [0, 1, 2, 3],
+                        ticktext: ['Normal', 'Léger', 'Modéré', 'Sévère']
+                    },
+                    paper_bgcolor: '#ffffff',
+                    plot_bgcolor: '#f9fafb', // gray-50
+                    font: {
+                        family: 'Inter, sans-serif',
+                        color: '#374151' // gray-700
+                    },
+                    hovermode: 'closest'
+                };
+
+                Plotly.newPlot('analysis-chart', [traceAmplitude, traceFrequency, traceSeverity], layout);
+            } else {
+                noChartDataDiv.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching patient analyses:', error);
+            tableBody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-base text-red-600">Erreur lors du chargement des analyses.</td></tr>';
+            analysesErrorDiv.classList.remove('hidden');
+            chartErrorDiv.classList.remove('hidden');
+        });
+});
+</script>
+{% endblock %}

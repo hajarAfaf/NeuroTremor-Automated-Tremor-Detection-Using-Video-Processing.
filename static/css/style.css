@@ -1,0 +1,73 @@
+/* Global Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    color: #334155; /* neutral-700 */
+    background-color: #f8fafc; /* neutral-50 */
+}
+
+a {
+    color: #3b82f6; /* blue-500 */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Custom focus outline for better accessibility and aesthetics */
+*:focus {
+    outline: 2px solid #3b82f6; /* blue-500 */
+    outline-offset: 2px;
+}
+
+/* Analysis History Section in Patient Home */
+.analysis-history-section {
+    margin-top: 2rem; /* Add some space above this section */
+}
+
+.analyses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; /* Space between analysis items */
+}
+
+.analysis-item {
+    background-color: #f1f5f9; /* neutral-100 */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Space between paragraphs */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.analysis-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.analysis-item p {
+    margin: 0; /* Remove default paragraph margins */
+    font-size: 0.95rem;
+    color: #475569; /* neutral-700 */
+}
+
+.analysis-item p strong {
+    color: #1e293b; /* neutral-800 */
+}
+
+.analysis-item .btn {
+    margin-top: 1rem; /* Space above the button */
+    align-self: flex-start; /* Align button to the start */
+}
+
+/* Responsive adjustments for analysis history */
+@media (max-width: 767px) { /* md breakpoint */
+    .analyses-list {
+        grid-template-columns: 1fr; /* Stack items on small screens */
+    }
+    .analysis-item {
+        padding: 1rem;
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "parkinson-detection-main",
+  "version": "1.0.0",
+  "description": "I cannot continue until you install the \"Build Tools for Visual Studio\" as described in the `README.md` file. This is a manual step that you need to perform on your machine. Please let me know once you have installed them so I can proceed with the installation of `pandas` and other packages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind-init": "npx tailwindcss init -p",
+    "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

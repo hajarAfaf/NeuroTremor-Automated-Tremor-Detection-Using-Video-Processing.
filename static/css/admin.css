@@ -1,0 +1,133 @@
+/* 
+Admin Panel Styles
+*/
+
+:root {
+    --admin-bg: #f8f9fa;
+    --sidebar-bg: #212529;
+    --sidebar-width: 260px;
+    --sidebar-link-color: #adb5bd;
+    --sidebar-link-hover-color: #fff;
+    --sidebar-link-active-color: #fff;
+    --sidebar-link-active-bg: #0d6efd;
+    --topbar-height: 60px;
+    --admin-text-color: #343a40;
+    --admin-border-color: #dee2e6;
+}
+
+body.admin-body {
+    background-color: var(--admin-bg);
+    color: var(--admin-text-color);
+    font-family: 'Inter', sans-serif;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-link-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+}
+
+.sidebar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-decoration: none;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar-nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--sidebar-link-color);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.sidebar-nav-link:hover {
+    color: var(--sidebar-link-hover-color);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav-link.active {
+    color: var(--sidebar-link-active-color);
+    background-color: var(--sidebar-link-active-bg);
+    font-weight: 600;
+}
+
+.sidebar-nav-link .nav-icon {
+    margin-right: 1rem;
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+/* Main Content */
+.admin-main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top Bar (Optional, if needed) */
+.admin-topbar {
+    height: var(--topbar-height);
+    background-color: #fff;
+    border-bottom: 1px solid var(--admin-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Auth pages styling (Login, Register) */
+.admin-auth-wrapper {
+    background-color: var(--admin-bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Override default styles for admin context */
+.admin-main-content .card {
+    border: 1px solid var(--admin-border-color);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.admin-main-content .table {
+    border-color: var(--admin-border-color);
+}

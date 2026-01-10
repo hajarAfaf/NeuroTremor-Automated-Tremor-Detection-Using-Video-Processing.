@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Accueil Patient{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-10 text-center leading-tight">Bienvenue, <span class="text-blue-700">{{ current_user.username }}</span></h2>
+
+  <div class="bg-blue-50 border border-blue-200 p-8 rounded-xl shadow-lg mb-10 text-center">
+    {% if doctor_name %}
+      <p class="text-xl text-gray-700">Votre médecin traitant est : <strong class="text-blue-800">Dr. {{ doctor_name }}</strong></p>
+    {% else %}
+      <p class="text-xl text-gray-700">Aucun médecin ne vous a encore été assigné. Un administrateur examinera bientôt votre dossier.</p>
+    {% endif %}
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="mb-10">
+        {% for category, message in messages %}
+          <div class="px-6 py-4 rounded-xl shadow-md mb-4 {% if category == 'success' %}bg-green-100 border border-green-400 text-green-700{% elif category == 'error' %}bg-red-100 border border-red-400 text-red-700{% else %}bg-blue-100 border border-blue-400 text-blue-700{% endif %}" role="alert">
+            {{ message }}
+            {% if category == 'info' %}
+              <a href="{{ url_for('main.my_history') }}" class="font-semibold underline hover:text-blue-800 ml-2">Consultez votre historique d'analyse ici.</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="bg-white p-10 rounded-xl shadow-xl mb-10 border border-gray-100">
+    <h3 class="text-3xl font-bold text-gray-800 mb-6">Uploader votre vidéo pour analyse</h3>
+    <p class="text-lg text-gray-700 mb-8">Veuillez uploader une vidéo de votre main et spécifier votre âge pour une analyse précise de la maladie de Parkinson.</p>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-8" id="video-upload-form">
+      <div>
+        <label for="video-file" class="block text-gray-700 text-lg font-semibold mb-3">Fichier Vidéo :</label>
+        <input type="file" name="video" id="video-file" accept="video/*" required class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        <p class="text-red-500 text-sm italic mt-2" id="video-file-feedback"></p>
+      </div>
+
+      <div>
+        <label for="age-input" class="block text-gray-700 text-lg font-semibold mb-3">Votre Âge :</label>
+        <input type="number" name="age" id="age-input" value="60" min="1" max="120" required class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-900 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        <p class="text-red-500 text-sm italic mt-2" id="age-input-feedback"></p>
+      </div>
+
+      <button type="submit" class="group relative w-full sm:w-auto flex justify-center items-center py-3 px-8 border border-transparent text-lg font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:-translate-y-1 shadow-lg" id="submit-button">
+        <i class="fas fa-upload mr-3"></i>
+        <span>Analyser la Vidéo</span>
+      </button>
+
+      <div id="loading-indicator" class="hidden flex items-center justify-center space-x-4 text-blue-600 text-lg font-medium">
+        <svg class="animate-spin h-7 w-7 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Analyse en cours... Veuillez patienter.</span>
+      </div>
+    </form>
+  </div>
+
+  <div class="bg-white p-10 rounded-xl shadow-xl border border-gray-100">
+    <h3 class="text-3xl font-bold text-gray-800 mb-6">Historique de vos Analyses</h3>
+    {% if analyses %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for analysis in analyses %}
+          <div class="bg-gray-50 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 flex flex-col justify-between border border-gray-200">
+            <div>
+              <p class="text-gray-700 mb-3 text-base"><strong>Date:</strong> {{ analysis.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+              {% if analysis.result %}
+                <p class="text-gray-700 mb-3 text-base"><strong>Type de Tremblement:</strong> {{ analysis.result.tremor_type | default('N/A') }}</p>
+                <p class="text-gray-700 mb-5 text-base"><strong>Sévérité:</strong> {{ analysis.result.severity | default('N/A') }}</p>
+                <a href="{{ url_for('main.result', analysis_id=analysis._id) }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold py-2 px-5 rounded-full transition duration-300 ease-in-out shadow-md">Voir les détails</a>
+              {% else %}
+                <p class="text-gray-700 mb-5 text-base">Analyse en attente ou échouée.</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-lg text-gray-600">Aucune analyse trouvée pour le moment. Uploadez une vidéo pour commencer !</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('video-upload-form');
+    const submitButton = document.getElementById('submit-button');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const videoFileInput = document.getElementById('video-file');
+    const ageInput = document.getElementById('age-input');
+    const videoFileFeedback = document.getElementById('video-file-feedback');
+    const ageInputFeedback = document.getElementById('age-input-feedback');
+
+    // Function to validate a field and show feedback
+    const validateField = (input, feedbackElement, errorMessage) => {
+      if (input.value.trim() === '') {
+        input.classList.add('border-red-500'); // Tailwind class for error
+        feedbackElement.textContent = errorMessage;
+        return false;
+      } else {
+        input.classList.remove('border-red-500');
+        feedbackElement.textContent = '';
+        return true;
+      }
+    };
+
+    // Specific validation for video file
+    const validateVideoFile = () => {
+      if (videoFileInput.files.length === 0) {
+        videoFileInput.classList.add('border-red-500');
+        videoFileFeedback.textContent = 'Veuillez sélectionner un fichier vidéo.';
+        return false;
+      }
+      const file = videoFileInput.files[0];
+      const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg']; // Example allowed types
+      if (!allowedTypes.includes(file.type)) {
+        videoFileInput.classList.add('border-red-500');
+        videoFileFeedback.textContent = 'Type de fichier non supporté. Veuillez uploader une vidéo (mp4, webm, ogg).';
+        return false;
+      }
+      // Add file size validation if needed
+      // const maxSize = 100 * 1024 * 1024; // 100MB
+      // if (file.size > maxSize) {
+      //   videoFileInput.classList.add('border-red-500');
+      //   videoFileFeedback.textContent = 'Le fichier est trop volumineux (max 100MB).';
+      //   return false;
+      // }
+      videoFileInput.classList.remove('border-red-500');
+      videoFileFeedback.textContent = '';
+      return true;
+    };
+
+    // Specific validation for age
+    const validateAge = () => {
+      const age = parseInt(ageInput.value);
+      if (isNaN(age) || age < 1 || age > 120) {
+        ageInput.classList.add('border-red-500');
+        ageInputFeedback.textContent = 'Veuillez entrer un âge valide (entre 1 et 120).';
+        return false;
+      }
+      ageInput.classList.remove('border-red-500');
+      ageInputFeedback.textContent = '';
+      return true;
+    };
+
+    // Event listeners for real-time validation
+    videoFileInput.addEventListener('change', validateVideoFile);
+    ageInput.addEventListener('input', validateAge);
+
+    uploadForm.addEventListener('submit', function(event) {
+      const isVideoValid = validateVideoFile();
+      const isAgeValid = validateAge();
+
+      if (!isVideoValid || !isAgeValid) {
+        event.preventDefault(); // Prevent form submission if validation fails
+      } else {
+        submitButton.disabled = true;
+        loadingIndicator.classList.remove('hidden');
+      }
+    });
+  });
+</script>
+{% endblock %}

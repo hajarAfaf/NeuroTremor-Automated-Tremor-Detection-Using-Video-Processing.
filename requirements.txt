@@ -1,0 +1,17 @@
+Flask
+pymongo
+python-dotenv
+Flask-WTF
+opencv-python
+mediapipe
+scikit-learn
+numpy
+pandas
+joblib
+tqdm
+bcrypt
+celery
+redis
+black
+flake8
+pytest

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Administration{% endblock %} - ParkinsonDetect</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet (for basic resets/utilities if any) -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="font-sans antialiased">
+
+  {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <nav class="w-72 bg-gray-900 text-white flex flex-col justify-between p-6 shadow-2xl">
+        <div>
+          <a href="{{ url_for('admin.dashboard') }}" class="text-3xl font-extrabold text-white mb-10 block text-center tracking-wide">Admin Panel</a>
+          <ul class="space-y-3">
+            <li>
+              <a href="{{ url_for('admin.dashboard') }}" class="block py-3 px-5 rounded-lg hover:bg-gray-700 flex items-center text-lg font-medium transition duration-200 {% if request.endpoint == 'admin.dashboard' %}bg-blue-600 text-white shadow-md{% endif %}">
+                <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                Tableau de bord
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('admin.doctors_list') }}" class="block py-3 px-5 rounded-lg hover:bg-gray-700 flex items-center text-lg font-medium transition duration-200 {% if request.endpoint in ['admin.doctors_list', 'admin.add_doctor'] %}bg-blue-600 text-white shadow-md{% endif %}">
+                <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                Gérer les Médecins
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('admin.patients_list') }}" class="block py-3 px-5 rounded-lg hover:bg-gray-700 flex items-center text-lg font-medium transition duration-200 {% if request.endpoint in ['admin.patients_list', 'admin.patient_details'] %}bg-blue-600 text-white shadow-md{% endif %}">
+                <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2" /></svg>
+                Gérer les Patients
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="pb-6">
+            <a href="{{ url_for('auth.logout') }}" class="block py-3 px-5 rounded-lg hover:bg-gray-700 flex items-center text-lg font-medium transition duration-200">
+                <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                Déconnexion
+            </a>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-10 bg-gray-100">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mb-6">
+              {% for category, message in messages %}
+                <div class="px-6 py-4 rounded-xl shadow-md mb-3 {% if category == 'success' %}bg-green-100 border border-green-400 text-green-700{% elif category == 'error' %}bg-red-100 border border-red-400 text-red-700{% else %}bg-blue-100 border border-blue-400 text-blue-700{% endif %}" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        {% block admin_content %}{% endblock %}
+      </main>
+    </div>
+  {% else %}
+    {# This block is for auth pages like login/register where the sidebar is not present #}
+    <div class="min-h-screen flex items-center justify-center bg-gray-50">
+        {% block admin_content %}{% endblock %}
+    </div>
+  {% endif %}
+
+</body>
+</html>

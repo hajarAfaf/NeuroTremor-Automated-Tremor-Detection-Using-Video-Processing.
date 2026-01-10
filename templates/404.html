@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page non trouvée{% endblock %}
+{% block content %}
+<div class="text-center py-20">
+    <h1 class="text-6xl font-bold text-gray-800">404</h1>
+    <p class="text-xl text-gray-600 mt-4">Désolé, la page que vous recherchez n'existe pas.</p>
+    <a href="{{ url_for('main.home') }}" class="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">Retour à l'accueil</a>
+</div>
+{% endblock %}
